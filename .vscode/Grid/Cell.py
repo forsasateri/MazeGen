@@ -1,35 +1,63 @@
-class cell:
 
-    def __init__(self, r, c):
-        self.row = r
-        self.column = c
-        self.links = {}
+
+class Cell:
+
+    @property
+    def row(self):
+        return self._row
+
+    @property
+    def column(self):
+        return self._column
+
+    @property
+    def links(self):
+        return list(self._links.keys())
+
+    @property
+    def neighbours(self):
+        nList = []
+        if self.north:
+            nList.append(self.north)
+        if self.south:
+            nList.append(self.south)
+        if self.east:
+            nList.append(self.east)
+        if self.west:
+            nList.append(self.west)
+        return nList
+
+    @property
+    def data(self):
+        return self._data
+
+    def __init__(self, row, column):
+
+        if row is None or row < 0:
+            raise ValueError("Row must be a positive integer")
+        if column is None or column < 0:
+            raise ValueError("Column must be a positive integer")
+
+        self._column = column
+        self._links = {}
+        self._data = {}
+
+        self.north = None
+        self.south = None
+        self.west = None
+        self.east = None
     
     def link(self, cell, bidi = True):
-        self.links[cell] = True
+        self._links[cell] = True
         if bidi:
             cell.link(self, False)
+        return self
 
     def unlink(self, cell, bidi = True):
-        del self.links[cell]
+        del self._links[cell]
         if bidi:
             cell.unlink(self, False)
-
-    def links(self):
-        # Problem
-        return self.links.keys()
+        return self
 
     def linked(self, cell):
-        return cell in self.links
-
-    def neighbours(self):
-        self.list = []
-        if north:
-            self.list.append(north)
-        if south:
-            self.list.append(south)
-        if east:
-            self.list.append(east)
-        if west:
-            self.list.append(west)
-        return self.list
+        return cell in self._links
